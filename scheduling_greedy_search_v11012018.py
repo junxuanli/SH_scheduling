@@ -15,13 +15,15 @@ from copy import deepcopy
 
 # In[1]: standarized input
 tasklist = pd.read_csv('projA_input.csv',sep=',',index_col='Veh_No')
-gantt = pd.DataFrame(index=tasklist.index,columns=tasklist.columns)
-for col in gantt.columns:
-    for ind in gantt.index:
+gantt_s = pd.DataFrame(0,index=tasklist.index,columns=tasklist.columns)
+gantt_s = gantt_s.drop(['SOB'],1)
+gantt_e = pd.DataFrame(0,index=tasklist.index,columns=tasklist.columns)
+gantt_e = gantt_e.drop(['SOB'],1)
+for col in gantt_s.columns:
+    for ind in gantt_s.index:
         if tasklist[col][ind]==0:
-            gantt[col][ind]=[-1,-1]
-        else:
-            gantt[col][ind]=[0,0]
+            gantt_s[col][ind] = -1
+            gantt_e[col][ind] = -1
 Iday = 1 # Fisrt day: 1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friady
 ResourceMax = {'LaserRoom':2,'ManualWelding':9,'ManualDoorOp':12,'CMM':2}
 ResourcePool = {'LaserRoom':2,'ManualWelding':9,'ManualDoorOp':12,'CMM':2}
@@ -180,26 +182,20 @@ def new_tasks(single_pending,single_processinglist,TimeRem,ResourcePool,t):
             
         
 # In[2]: Calcualte Gantt: each component has a start time and an end time, work day operating time is 8*60=480 min
-for ind in gantt.index:
-    gantt['SOB'][ind][0] = (tasklist.SOB[ind]-1)*8*60 # car starting time
-    gantt['SOB'][ind][1] = (tasklist.SOB[ind]-1)*8*60
 
 Itime = 0 # start working time of the day
 t = 0 # cummulated working time: need to be equal to Itime if evaluate in the middle of a day!!!
 
 # create tasks check list to derive stopflag - 0 stop, >0 continue looping
-checklist = pd.DataFrame(index=tasklist.index,columns=tasklist.columns) # create a seperate task checklist
-checklist.SOB = np.ones_like(gantt.SOB)
-for col in tasklist.columns:
-    if col != 'SOB':
-        checklist[col] = tasklist[col]
+checklist = tasklist.copy(deep=True) # create a seperate task checklist
+checklist.SOB = np.ones_like(tasklist.SOB)
 stopflag = checklist.values.sum()
 
 # create event list and add SOB into event list
 eventlist = pd.DataFrame(columns = ['event','Veh','starttime','endtime'])
-eventlist.event = ['SOB' for car in gantt.index]
-eventlist.Veh = gantt.index
-eventlist.starttime = [val[0] for val in gantt.SOB.values]
+eventlist.event = ['SOB' for car in gantt_s.index]
+eventlist.Veh = gantt_s.index
+eventlist.starttime = [(val-1)*480 for val in tasklist.SOB.values]
 eventlist.endtime = eventlist.starttime+ProcessingTime['SOB']
 
 # start looping
@@ -284,8 +280,8 @@ while stopflag>0:
             for ind in car_new.index:
                 car_newtemp = car_new.loc[ind] # Note: this is a Series
                 eventlist = eventlist.append(pd.Series([car_newtemp['task'],car,t,t+ProcessingTime[car_newtemp['task']]], index=eventlist.columns),ignore_index=True)
-                gantt[car_newtemp['task']][car][0] = t
-                gantt[car_newtemp['task']][car][1] = t+ProcessingTime[car_newtemp['task']]
+                gantt_s[car_newtemp['task']][car] = t
+                gantt_e[car_newtemp['task']][car] = t+ProcessingTime[car_newtemp['task']]
                 processinglist = processinglist.set_value(car,car_newtemp['task'],1) # mark task as processing
     # identify next event, move time tic to the time point
     eventlist = eventlist.sort_values(['endtime'])
@@ -295,19 +291,19 @@ while stopflag>0:
 # In[3]: Twick to real time scale based on Iday and Itime
 firstday_span = 480-Itime
 week_end = firstday_span + (5-Iday)*480
-gantt_tuned = deepcopy(gantt)
+gantt_s_tuned = deepcopy(gantt_s)
+gantt_e_tuned = deepcopy(gantt_e)
 
 days_afterfirstweek = np.ceil((t-week_end)/480)
 weeks_afterfirstweek = np.floor(days_afterfirstweek/5)
 days_lastweek = np.mod(days_afterfirstweek,5)
 weekend_labels = [week_end]+[week_end+(i+1)*5*480 for i in np.arange(weeks_afterfirstweek)]
-for tsk in gantt_tuned.columns:
-    if tsk!='SOB':
-        for car in gantt_tuned.index:
-            current_element = gantt_tuned[tsk][car]
-            if current_element!=[0,0]:
-                for lb in weekend_labels:
-                    if current_element[0]>=lb:
-                        gantt_tuned[tsk][car][0] = gantt_tuned[tsk][car][0]+480*2
-                        gantt_tuned[tsk][car][1] = gantt_tuned[tsk][car][1]+480*2
+for tsk in gantt_s_tuned.columns:
+    for car in gantt_s_tuned.index:
+        current_element = gantt_s_tuned[tsk][car]
+        if current_element!=0 and current_element!=-1:
+            for lb in weekend_labels:
+                if current_element>=lb:
+                    gantt_s_tuned[tsk][car] = gantt_s_tuned[tsk][car]+480*2
+                    gantt_e_tuned[tsk][car] = gantt_e_tuned[tsk][car]+480*2
     
