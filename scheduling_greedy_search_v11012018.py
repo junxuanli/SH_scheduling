@@ -11,7 +11,7 @@ output: Gantt chart
 # In[0]: import packages
 import numpy as np
 import pandas as pd
-from copy import deepcopy
+
 
 # In[1]: standarized input
 tasklist = pd.read_csv('projA_input.csv',sep=',',index_col='Veh_No')
@@ -291,8 +291,8 @@ while stopflag>0:
 # In[3]: Twick to real time scale based on Iday and Itime
 firstday_span = 480-Itime
 week_end = firstday_span + (5-Iday)*480
-gantt_s_tuned = deepcopy(gantt_s)
-gantt_e_tuned = deepcopy(gantt_e)
+gantt_s_tuned = gantt_s.copy(deep=True)
+gantt_e_tuned = gantt_e.copy(deep=True)
 
 days_afterfirstweek = np.ceil((t-week_end)/480)
 weeks_afterfirstweek = np.floor(days_afterfirstweek/5)
