@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Scheduling</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='bootstrap-4.1.3.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+    <!-- <nav class="my-2 my-md-0 mr-md-3">
+      <a class="p-2 text-dark" href="#">Features</a>
+      <a class="p-2 text-dark" href="#">Enterprise</a>
+      <a class="p-2 text-dark" href="#">Support</a>
+      <a class="p-2 text-dark" href="#">Pricing</a>
+    </nav> -->
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <h1>Form</h1>
+        </div>
+        <div class="col-8">
+            <p>Description: <br/> MC101:enabled <del>MC101</del>:disabled <done>MC101</done>:completed</p>
+        </div>
+        <div class="col-2 text-right">
+            <button type="button" class="btn btn-primary">ADD</button>
+        </div>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">SOB</th>
+            <th scope="col">Options</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,<del>RF101</del>,RF201,RF301,FF101,UB101,BS101,CL100,CL101,<done>CL102</done>,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">1</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">1</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">1</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>1</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>2</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>3</td>
+            <td>MC101,MC201,MC301,RF101,RF201,RF301,FF101,UB101,BS101,CL100,CL101,CL102,BS201,FI101,FO101,LS101,A metric,B metric,CL201,AS101,BS Audit,C metric</td>
+            <td>
+                <button type="button" class="btn btn-link btn-sm">Edit</button>
+                <button type="button" class="btn btn-link btn-sm">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col text-center">
+            <button type="button" class="btn btn-primary btn-lg">Submit</button>
+        </div>
+    </div>
+
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row">
+            <div class="col-12 col-md text-center">
+                <img class="mb-2" src="{{ url_for('static', filename='logo.svg') }}" alt="" width="24" height="24">
+                <small class="d-block mb-3 text-muted">&copy; 2018-2019</small>
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bootstrap-4.1.3.min.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
