@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from io import StringIO
+from datetime import datetime
 import scheduling
+import scheduling_greedy_search_v11132018_with_main
 app = Flask(__name__)
 
 #index page
@@ -11,9 +13,12 @@ def index():
 #api
 @app.route('/scheduler', methods=['POST'])
 def scheduler():
+    dt_str = request.form['dt']
+    dt = datetime.strptime(dt_str, '%m/%d/%Y %I:%M')
     csv = StringIO(request.form['csv'])
     if csv:
-        return scheduling.main(csv)
+        # return scheduling.main(csv)
+        return scheduling_greedy_search_v11132018_with_main.main(csv, dt)
     return 'error'
 
 if __name__ == "__main__":

@@ -30,4 +30,5 @@ def merge(left, right):
             if j != 'Veh_No':
                 print(column)
                 print(right.at[i, j])
-                left.at[i, j] = str(column) + '$' + str(right.at[i, j])
+                left.loc[i, j] = str(column) + '$' + str(right.at[i, j])
+                # left.at[i, j] = str(column) + '$' + str(right.at[i, j])

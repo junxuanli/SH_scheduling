@@ -416,7 +416,19 @@ def main(csv_input='projA_input2.csv',t = dt.datetime(2018,10,1,8,30)):
         t = dt.datetime.utcfromtimestamp(t_trans)
         stopflag = checklist.values.sum()         
     # output
-    gantt_s.to_csv('gantt_s.csv',sep=',')
-    gantt_e.to_csv('gantt_e.csv',sep=',') 
-    gantt_d.to_csv('gantt_d.csv',sep=',')  
-    return 'gantt_s.csv','gantt_d.csv'
+    # gantt_s.to_csv('gantt_s.csv',sep=',')
+    # gantt_e.to_csv('gantt_e.csv',sep=',')
+    # gantt_d.to_csv('gantt_d.csv',sep=',')
+    merge(gantt_s, gantt_d)
+    return gantt_s.to_csv(sep=',', index=False)
+    # return 'gantt_s.csv','gantt_d.csv'
+
+def merge(left, right):
+    for i, row in left.iterrows():
+        for j, column in row.iteritems():
+            print(j)
+            if j != 'Veh_No':
+                print(column)
+                print(right.at[i, j])
+                # left.at[i, j] = str(column) + '$' + str(right.at[i, j])
+                left.loc[i, j] = str(column) + '$' + str(right.at[i, j])
