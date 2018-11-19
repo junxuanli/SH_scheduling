@@ -221,14 +221,14 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
     eventlist = pd.DataFrame(columns = ['event','veh','starttime','endtime']) 
     eventlist.event = ['BIWSOB' for car in checklist.index]
     eventlist.veh = checklist.index
-    eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %I:%M') for tm in tasklist.FirstDay]
-    eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %I:%M') for tm in tasklist.FirstDay]
+    eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.FirstDay]
+    eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.FirstDay]
     for car in gantt.index:
-        gantt['BIWSOB'][car]=str(eventlist.starttime[car-1])+'$'+'1'
+        gantt['BIWSOB'][car]=str(tasklist['FirstDay'][car])+'$'+'1'
     
     # eliminate started BIWSOB event (for real-time update function)
     for car in checklist.index:
-        carsob = eventlist.endtime[car-1]
+        carsob = dt.datetime.strptime(tasklist['FirstDay'][car], '%m/%d/%Y %H:%M')
         checker = int(carsob>=t)
         checklist.at[car,'BIWSOB'] = checker
     eventlist = eventlist.loc[eventlist.endtime>=t]
