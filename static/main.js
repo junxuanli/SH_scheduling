@@ -250,7 +250,7 @@ function parse_csv_data(data) {
         var row = json.data[i];
         if (row && row.length > 1) {
             var id = veh_no_prefix + row[0];
-            var proj = {"id": id, "text": id, "open": true};
+            var proj = {"id": id, "text": id, "open": false};
             tasks.data.push(proj);
             for (var j = 1; j < row.length; j++) {
                 var task_name = json.data[0][j];
