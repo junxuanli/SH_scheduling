@@ -18,7 +18,22 @@ def scheduler():
     if csv:
         # return scheduling.main(csv)
         return scheduling_WeekdayDuration.main(csv, dt)
-    return 'error'
+    return 'error', 500
+
+@app.errorhandler(500)
+def internal_error(exception):
+    app.logger.error(exception)
+    return '500 error', 500
+    # return render_template('500.html'), 500
 
 if __name__ == "__main__":
-    app.run()
+    if app.debug is not True:
+        import logging
+    from logging.handlers import RotatingFileHandler
+    file_handler = RotatingFileHandler('flask.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    file_handler.setFormatter(formatter)
+    app.logger.addHandler(file_handler)
+    app.run(host='0.0.0.0', port=80)
+    # app.run()
