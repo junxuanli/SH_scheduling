@@ -223,7 +223,9 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
     eventlist.veh = checklist.index
     eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %I:%M') for tm in tasklist.FirstDay]
     eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %I:%M') for tm in tasklist.FirstDay]
-    gantt['BIWSOB'] = str(eventlist.starttime.values)+'$'+'1'
+    for car in gantt.index:
+        gantt['BIWSOB'][car]=str(eventlist.starttime[car-1])+'$'+'1'
+    
     # eliminate started BIWSOB event (for real-time update function)
     for car in checklist.index:
         carsob = eventlist.endtime[car-1]
@@ -287,18 +289,18 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
                     car_newtemp = car_new.loc[ind] # Note: this is a Series
                     duration_temp = ProcessingTime[car][car_newtemp['task']]
                     if car_newtemp['task'] in task_multi:
-                        if ~(car_newtemp['task'] in ['TRANS1','TRANS2']):
+                        if car_newtemp['task'] not in ['TRANS1','TRANS2']:
                             trmw = (t.weekday()+1)*480 - t.hour*60-t.minute # remaining time in current week
                             trmd = 16*60+30 - t.hour*60-t.minute # remaining time today
-                            tleft = duration_temp -trmd # left-over task time
+                            tleft = np.max([0,duration_temp -trmd]) # left-over task time
                             ngap = np.floor(tleft/480) # night gaps
                             duration_temp = duration_temp+ngap*960
                             if trmw<duration_temp:
                                 duration_temp = duration_temp+2880 # add weekend gap into duration
                     eventlist = eventlist.append(pd.Series([car_newtemp['task'],car,t,t+dt.timedelta(minutes=duration_temp)], index=eventlist.columns),ignore_index=True)
                     duration_workday = int(ProcessingTime[car][car_newtemp['task']])
-                    gantt.loc[car,car_newtemp['task']] = str(t)+'$'+str(duration_workday)
-                    processinglist.loc[car,car_newtemp['task']] = 1
+                    gantt.loc[car,car_newtemp['task']] = str(t)+'$'+str(duration_workday)  
+                    processinglist.at[car,car_newtemp['task']] = 1
         
         # identify next event, move time tic to the time point
         eventlist = eventlist.sort_values(['endtime'])
@@ -307,6 +309,9 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
         t = dt.datetime.utcfromtimestamp(t_trans)
         stopflag = checklist.values.sum()    
         n = n+1
+        # gantt.to_csv('gantt.csv',sep=',')
     # output
-    return gantt.to_csv('gantt.csv',sep=',')
+    return gantt.to_csv(sep=',')
     
+
+  
