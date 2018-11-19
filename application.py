@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request
 from io import StringIO
 from datetime import datetime
-import scheduling
-import scheduling_greedy_search_v11132018_with_main
+import scheduling_WeekdayDuration
 app = Flask(__name__)
 
 #index page
@@ -18,7 +17,7 @@ def scheduler():
     csv = StringIO(request.form['csv'])
     if csv:
         # return scheduling.main(csv)
-        return scheduling_greedy_search_v11132018_with_main.main(csv, dt)
+        return scheduling_WeekdayDuration.main(csv, dt)
     return 'error'
 
 if __name__ == "__main__":
