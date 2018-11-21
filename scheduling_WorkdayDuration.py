@@ -20,7 +20,6 @@ TaskDayMax = {'C metric':2,'D metric':1,'DVT':8,'BLT001':1,'BLT002':1,'WT001':2,
 TimeOcp = {'CL100':0.8,'LS101':0.65,'A metric':5,'B metric':6}
 ResourceOcpDict = {'LaserRoom':['CL100','LS101'],'ManualWelding':['CL101','CL102'],'ManualDoorOp':['CL201'],'CMM':['A metric','B metric'], 'CDworker':['C metric','D metric'],'Hoist':['T1','T2','T3','T4','T5','T6','C1','C2','C3','C4','NF001','DF001','FI001','DC001','LV001','VFC','ATF','RQA']}
 tasktime = pd.read_csv('taskduration.csv',sep=',')
-PaintLocation = 'shanghai'
 taskprior = pd.read_csv('taskpriority.csv',sep=',')
 Taskpriority = dict(zip(taskprior.task,taskprior.priority))
 tasksingle = pd.read_csv('tasksingleday.csv',sep=',')
@@ -63,21 +62,18 @@ def pending_tasks(single_checklist,single_processinglist):
         # layer 10
         pendinglist['C metric'] = np.min([1-single_checklist['AS101'],single_checklist['C metric']])
         pendinglist['BS Audit'] = np.min([1-single_checklist['AS101'],single_checklist['BS Audit']])
-        # layer 11
-        pendinglist['TRANSSOB'] = np.min([1-(single_checklist['AS101'] or single_checklist['BS Audit'] or single_checklist['C metric']),single_checklist['TRANSSOB']])
         # layer 12
-        pendinglist['TRANS1'] = np.min([1-single_checklist['TRANSSOB'],single_checklist['TRANS1']])
+        pendinglist['TRANS1'] = np.min([1-(single_checklist['AS101'] or single_checklist['BS Audit'] or single_checklist['C metric']),single_checklist['TRANS1']])
         # layer 13
         pendinglist['PAINT'] = np.min([1-single_checklist['TRANS1'],single_checklist['PAINT']])
         # layer 14
         pendinglist['TRANS2'] = np.min([1-single_checklist['PAINT'],single_checklist['TRANS2']])
         # layer 15
-        pendinglist['GASOB'] = np.min([1-single_checklist['TRANS2'],single_checklist['GASOB']])
         pendinglist['BLT001'] = np.min([1-single_checklist['TRANS2'],single_checklist['BLT001']])
         # layer 16
-        pendinglist['T1'] = np.min([1-single_checklist['GASOB'],single_checklist['T1']])
-        pendinglist['PTI'] = np.min([1-single_checklist['GASOB'],single_checklist['PTI']])
-        pendinglist['DR'] = np.min([1-single_checklist['GASOB'],single_checklist['DR']])
+        pendinglist['T1'] = np.min([1-single_checklist['TRANS2'],single_checklist['T1']])
+        pendinglist['PTI'] = np.min([1-single_checklist['TRANS2'],single_checklist['PTI']])
+        pendinglist['DR'] = np.min([1-single_checklist['TRANS2'],single_checklist['DR']])
         # layer 17
         pendinglist['T2'] = np.min([1-single_checklist['T1'],single_checklist['T2']])
         # layer 18
@@ -128,9 +124,7 @@ def pending_tasks(single_checklist,single_processinglist):
         # layer 40
         pendinglist['GLD001'] = np.min([1-single_checklist['CAMO'],single_checklist['GLD001']])
         # layer 41
-        pendinglist['VehicleEOB'] = np.min([1-single_checklist['GLD001'],single_checklist['VehicleEOB']])
-        # layer 40
-        pendinglist['PACK1'] = np.min([1-single_checklist['VehicleEOB'],single_checklist['PACK1']])
+        pendinglist['PACK1'] = np.min([1-single_checklist['GLD001'],single_checklist['PACK1']])
         pending = pd.DataFrame(columns=['task','prior'])
         pending['task'] = [ind for ind in pendinglist.index.values if pendinglist[ind]==1]
         pending['prior'] = [Taskpriority[ind] for ind in pending['task']]
@@ -186,9 +180,10 @@ def new_tasks(single_pending,single_processinglist,TimeRem,TaskRem,ResourcePool,
 def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
     # standarized input
     tasklist = pd.read_csv(csv_input,sep=',',index_col='Veh_No')
+    PaintLocation = 'shanghai'
     ResourcePool = deepcopy(ResourceMax)
     gantt = pd.DataFrame(0,index=tasklist.index,columns=tasklist.columns) # gantt chart info
-    gantt = gantt.drop(['FirstDay'],1)
+    gantt = gantt.drop(['SOB'],1)
     for col in gantt.columns:
         for ind in gantt.index:
             if tasklist[col][ind]==0:
@@ -216,19 +211,20 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
 
     # create tasks check list to derive stopflag - 0 stop, >0 continue looping
     checklist = tasklist.copy(deep=True) # create a seperate task checklist
-    checklist = checklist.drop(['FirstDay'],1)
+    checklist = checklist.drop(['SOB'],1)
+    checklist['BIWSOB'] = np.ones(len(checklist))
     # create event list and add BIWSOB into event list
     eventlist = pd.DataFrame(columns = ['event','veh','starttime','endtime']) 
     eventlist.event = ['BIWSOB' for car in checklist.index]
     eventlist.veh = checklist.index
-    eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.FirstDay]
-    eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.FirstDay]
+    eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
+    eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
     for car in gantt.index:
-        gantt['BIWSOB'][car]=str(dt.datetime.strptime(tasklist['FirstDay'][car], '%m/%d/%Y %H:%M'))+'$'+'1'
+        gantt['BIWSOB'][car]=str(dt.datetime.strptime(tasklist['SOB'][car], '%m/%d/%Y %H:%M'))+'$'+'1'
     
     # eliminate started BIWSOB event (for real-time update function)
     for car in checklist.index:
-        carsob = dt.datetime.strptime(tasklist['FirstDay'][car], '%m/%d/%Y %H:%M')
+        carsob = dt.datetime.strptime(tasklist['SOB'][car], '%m/%d/%Y %H:%M')
         checker = int(carsob>=t)
         checklist.at[car,'BIWSOB'] = checker
     eventlist = eventlist.loc[eventlist.endtime>=t]
@@ -312,6 +308,3 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
         # gantt.to_csv('gantt.csv',sep=',')
     # output
     return gantt.to_csv(sep=',')
-    
-
-  
