@@ -219,8 +219,6 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
     eventlist.veh = checklist.index
     eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
     eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
-    for car in gantt.index:
-        gantt['BIWSOB'][car]=str(dt.datetime.strptime(tasklist['SOB'][car], '%m/%d/%Y %H:%M'))+'$'+'1'
     
     # eliminate started BIWSOB event (for real-time update function)
     for car in checklist.index:

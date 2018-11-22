@@ -219,8 +219,6 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
     eventlist.veh = checklist.index
     eventlist.starttime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
     eventlist.endtime = [dt.datetime.strptime(tm, '%m/%d/%Y %H:%M') for tm in tasklist.SOB]
-    for car in gantt.index:
-        gantt['BIWSOB'][car]=str(dt.datetime.strptime(tasklist['SOB'][car], '%m/%d/%Y %H:%M'))+'$'+'1'
     
     # eliminate started BIWSOB event (for real-time update function)
     for car in checklist.index:
@@ -295,7 +293,7 @@ def main(csv_input,t = dt.datetime(2018,10,1,8,30)):
                                 duration_temp = duration_temp+2880 # add weekend gap into duration
                     eventlist = eventlist.append(pd.Series([car_newtemp['task'],car,t,t+dt.timedelta(minutes=duration_temp)], index=eventlist.columns),ignore_index=True)
                     duration_workday = int(ProcessingTime[car][car_newtemp['task']])
-                    gantt.loc[car,car_newtemp['task']] = str(t)+'$'+str(duration_workday)  
+                    gantt.loc[car,car_newtemp['task']] = str(t)+'$'+str(duration_workday)
                     processinglist.at[car,car_newtemp['task']] = 1
         
         # identify next event, move time tic to the time point
