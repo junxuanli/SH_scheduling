@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Scheduling</title>
+    <title>Ten-D Innovations 排产系统</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='bootstrap-4.1.3.min.css') }}" rel="stylesheet">
@@ -16,7 +16,7 @@
 <body>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">Ten-D Innovations</h5>
     <!-- <nav class="my-2 my-md-0 mr-md-3">
       <a class="p-2 text-dark" href="#">Features</a>
       <a class="p-2 text-dark" href="#">Enterprise</a>
@@ -27,24 +27,24 @@
 
 <div class="container form_container" id="form_container">
     <div class="row">
-        <div class="col-2">
-            <h1>Form</h1>
+        <div class="col-4">
+            <h1>排产列表</h1>
         </div>
-        <div class="col-8">
+        <div class="col-6">
             <!--<p>Description: <br/> MC101:enabled <del>MC101</del>:disabled <done>MC101</done>:completed</p>-->
             <p>Description: <br/> <span>MC101</span>:enabled <del>MC101</del>:disabled</p>
         </div>
         <div class="col-2 text-right">
-            <button type="button" class="btn btn-primary add" data-val="add" data-toggle="modal" data-target="#formModal">ADD</button>
+            <button type="button" class="btn btn-primary add" data-val="add" data-toggle="modal" data-target="#formModal">新增任务</button>
         </div>
     </div>
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">FirstDay</th>
-            <th scope="col">Options</th>
-            <th scope="col">Action</th>
+            <th scope="col">SOB</th>
+            <th scope="col">任务列表</th>
+            <th scope="col">操作</th>
         </tr>
         </thead>
         <tbody id="veh_list">
@@ -60,12 +60,12 @@
         </tbody>
     </table>
     <div class="row">
-        <label for="start-dt-input" class="col-2 col-form-label text-right">Start day</label>
+        <label for="start-dt-input" class="col-2 col-form-label text-right">开始时间</label>
         <div class="col-4">
             <input class="form-control" type="datetime-local" value="2018-10-01T08:30:00" id="start-dt-input">
         </div>
         <div class="col-6 text-center">
-            <button type="button" class="btn btn-primary btn-lg" id="submit">Submit</button>
+            <button type="button" class="btn btn-primary btn-lg" id="submit">开始排产</button>
         </div>
     </div>
     <div class="loading_modal">
@@ -92,13 +92,13 @@
                         </div>
                     </div>
                     <div class="row veh_no">
-                        <label for="veh_no_input" class="col-4 col-form-label">Veh_No</label>
+                        <label for="veh_no_input" class="col-4 col-form-label">ID</label>
                         <div class="col-8">
                             <input class="form-control" type="text" placeholder="1" id="veh_no_input" readonly>
                         </div>
                     </div>
                     <div class="row firstday">
-                        <label for="biwsob-input" class="col-4 col-form-label">FirstDay</label>
+                        <label for="biwsob-input" class="col-4 col-form-label">SOB</label>
                         <div class="col-8">
                             <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="biwsob-input">
                         </div>
@@ -125,8 +125,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary save">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary save">保存</button>
             </div>
         </div>
     </div>
@@ -135,7 +135,21 @@
 <div class="container-fluid" id="gantt_container" style='display:none; height:100%;'>
     <div class="row" style='height:100%;'>
         <div class="col-2">
-            <button type="button" class="btn btn-link btn-sm back">Back</button>
+            <button type="button" class="btn btn-link btn-sm back">返回</button>
+        </div>
+        <div class="col-10 text-center">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="0.5" checked>
+                <label class="form-check-label" for="inlineRadio1">30分钟</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="4">
+                <label class="form-check-label" for="inlineRadio2">4小时</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="24">
+                <label class="form-check-label" for="inlineRadio3">1天</label>
+            </div>
         </div>
         <div class="col-md-12" style='height:100%;'>
             <div class="gantt_wrapper panel" id="gantt" style='height:100%;'></div>
@@ -163,6 +177,7 @@
 <script src="{{ url_for('static', filename='dhtmlxgantt.js') }}"></script>
 <script src="{{ url_for('static', filename='dhtmlxgantt_tooltip.js') }}"></script>
 <script src="{{ url_for('static', filename='dhtmlxgantt_smart_rendering.js') }}"></script>
+<script src="{{ url_for('static', filename='locale_cn.js') }}"></script>
 <script src="{{ url_for('static', filename='papaparse.min.js') }}"></script>
 <script src="{{ url_for('static', filename='moment-with-locales.min.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>

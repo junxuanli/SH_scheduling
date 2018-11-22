@@ -9,6 +9,11 @@ html, body {
     /*overflow:hidden;*/
 }
 
+.table .thead-dark th {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
 .form_container {
     position: relative;
 }
