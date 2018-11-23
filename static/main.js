@@ -184,9 +184,9 @@ function bind_edit_del_events() {
     // });
     $('#form_container #veh_list .delete').off('click');
     $('#form_container #veh_list .delete').click(function () {
-        console.log('delete');
+        // console.log('delete');
         var index = get_click_item_index($(this));
-        console.log(index);
+        // console.log(index);
         //remove element
         $(this).parent().parent().remove();
         //delete data as well
@@ -221,7 +221,7 @@ function form_modal_events() {
             }
             data.push(val);
         });
-        console.log(data);
+        // console.log(data);
         if (index > 0) {
             //update
             input_json.data[index] = data;
@@ -285,7 +285,7 @@ var gantt_initilaized = false;
 
 function init() {
     $('#submit').click(function () {
-        console.log('submit');
+        // console.log('submit');
         var submit_csv = Papa.unparse(input_json);
         var dt = moment($('#start-dt-input').val()).format('MM/D/YYYY HH:mm');
         console.log(submit_csv);
@@ -342,7 +342,7 @@ function parse_csv_data(data) {
             }
         }
     }
-    console.log(tasks);
+    // console.log(tasks);
     return tasks;
 }
 
