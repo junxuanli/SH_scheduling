@@ -48,17 +48,33 @@ var default_input_csv_string = 'Veh_No,SOB,MC101,MC201,MC301,RF101,RF201,RF301,F
     '24,10/30/2018 8:30,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,0,1,1,0,0,0,1,0\n' +
     '25,10/31/2018 8:30,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,1,0';
 
+var job_cat_mapping = {
+    'BIW': ['MC101', 'MC201', 'MC301', 'RF101', 'RF201', 'RF301', 'FF101', 'UB101', 'BS101', 'CL100', 'CL101', 'CL102', 'BS201', 'FI101', 'FO101', 'LS101', 'A metric', 'B metric', 'CL201', 'AS101', 'BS Audit', 'C metric'],
+    'Paint': ['TRANS1', 'PAINT', 'TRANS2'],
+    'GA': ['T1', 'T2', 'WT001', 'T3', 'T4', 'T5', 'T6', 'C1', 'C2', 'C3', 'C4', 'PTI', 'DR'],
+    'ELEC': ['NF001', 'DF001', 'FI001', 'DC001', 'LV001', 'SI001'],
+    'GA恢复': ['VFC', 'ATF'],
+    'QC': ['QC001', 'DVT', 'QC002', 'QC003', 'QC004', 'CAMO', 'BLT001', 'BLT002', 'WT002', 'WT003', 'D metric', 'RQA', 'GCA', 'GLD001'],
+    '包装': ['PACK1']
+};
+
 var input_json = Papa.parse(default_input_csv_string);
-console.log(input_json);
+// console.log(input_json);
 
 var veh_list = $('#form_container #veh_list');
 var veh_item_template = '<tr data-id="{0}">\n' +
     '            <th scope="row">{1}</th>\n' +
     '            <td>{2}</td>\n' +
     '            <td>{3}</td>\n' +
+    '            <td>{4}</td>\n' +
+    '            <td>{5}</td>\n' +
+    '            <td>{6}</td>\n' +
+    '            <td>{7}</td>\n' +
+    '            <td>{8}</td>\n' +
+    '            <td>{9}</td>\n' +
     '            <td>\n' +
-    '                <button type="button" class="btn btn-link btn-sm edit" data-val="edit" data-toggle="modal" data-target="#formModal">编辑</button>\n' +
-    '                <button type="button" class="btn btn-link btn-sm delete">删除</button>\n' +
+    '                <button type="button" class="btn btn-link btn-sm edit" data-val="编辑任务" data-toggle="modal" data-target="#formModal"><i class="far fa-edit"></i> 编辑</button>\n' +
+    '                <button type="button" class="btn btn-link btn-sm delete"><i class="far fa-trash-alt"></i> 删除</button>\n' +
     '            </td>\n' +
     '        </tr>';
 
@@ -80,42 +96,92 @@ var form_option_item_template = '<div class="row {0}">\n' +
     '                            </div>\n' +
     '                        </div>';
 
-var option_text_item_templates = ['<del>{0}</del> ', '<span>{0}</span> '];
-
 render_veh_list(input_json);
 bind_edit_del_events();
 form_modal_events();
 function render_veh_list(json) {
+    $('.loading_modal').show();
     for(var i = 1; i < json.data.length; i++) {
         append_to_veh_list(json.data[i]);
     }
+    update_veh_total();
+    update_job_total();
+    $('.loading_modal').hide();
 }
 
 function append_to_veh_list(data) {
-    veh_list.append(String.format(veh_item_template, data[0], veh_no_prefix + data[0], data[1], display_option_text(data)));
+    var job_cates = count_job_cates(data);
+    veh_list.append(String.format(veh_item_template, data[0], veh_no_prefix + data[0], data[1], job_cates['BIW'],
+        job_cates['Paint'], job_cates['GA'], job_cates['ELEC'], job_cates['GA恢复'], job_cates['QC'], job_cates['包装']));
+}
+
+function update_veh_total() {
+    var count = input_json.data.length - 1;
+    $('.form_container .veh_total').text(count);
+}
+
+function update_job_total() {
+    var count = 0;
+    for(var i = 1; i < input_json.data.length; i++) {
+        for (var j = 2; j < input_json.data[i].length; j++) {
+            if (input_json.data[i][j] != '1') continue;
+            count ++;
+        }
+    }
+    $('.form_container .job_total').text(count);
 }
 
 function update_veh_item(index, data) {
+    var job_cates = count_job_cates(data);
     var item = veh_list.find('tr').eq(index-1);
     item.find('td').eq(0).text(data[1]);
-    item.find('td').eq(1).html(display_option_text(data));
+    item.find('td').eq(1).text(job_cates['BIW']);
+    item.find('td').eq(2).text(job_cates['Paint']);
+    item.find('td').eq(3).text(job_cates['GA']);
+    item.find('td').eq(4).text(job_cates['ELEC']);
+    item.find('td').eq(5).text(job_cates['GA恢复']);
+    item.find('td').eq(6).text(job_cates['QC']);
+    item.find('td').eq(7).text(job_cates['包装']);
 }
 
-function display_option_text(data) {
-    var options = input_json.data[0];
-    var text = '';
-    for (var i = 2; i < options.length; i++) {
-        text += String.format(option_text_item_templates[data[i]], options[i]);
+function count_job_cates(data) {
+    var job_cates = {};
+    for (var k in job_cat_mapping) {
+        job_cates[k] = 0;
     }
-    return text;
+    var options = input_json.data[0];
+    var cate = '';
+    for (var i = 2; i < options.length; i++) {
+        // console.log(data[i]);
+        // console.log(options[i]);
+        if (data[i] != '1') continue;
+        cate = get_cate_by_job(options[i]);
+        if (job_cates.hasOwnProperty(cate)) {
+            job_cates[cate] ++;
+        } else {
+            console.log('Ops...: ' + options[i] + '   ' + cate);
+        }
+    }
+    return job_cates;
+}
+
+function get_cate_by_job(job) {
+    for (var k in job_cat_mapping) {
+        if (job_cat_mapping.hasOwnProperty(k)) {
+            // console.log("Key is " + k + ", value is" + job_cat_mapping[k]);
+            if (job_cat_mapping[k].indexOf(job) >= 0) return k;
+        } else {
+            console.log('Ops.....: ' + k);
+        }
+    }
 }
 
 function bind_edit_del_events() {
     $('#form_container #veh_list .edit').off('click');
-    $('#form_container #veh_list .edit').click(function () {
-        console.log('edit');
-        console.log(get_click_item_index($(this)));
-    });
+    // $('#form_container #veh_list .edit').click(function () {
+    //     console.log('edit');
+    //     console.log(get_click_item_index($(this)));
+    // });
     $('#form_container #veh_list .delete').off('click');
     $('#form_container #veh_list .delete').click(function () {
         console.log('delete');
@@ -125,6 +191,8 @@ function bind_edit_del_events() {
         $(this).parent().parent().remove();
         //delete data as well
         input_json.data.splice(index,1);
+        update_veh_total();
+        update_job_total();
     });
 }
 
@@ -163,7 +231,9 @@ function form_modal_events() {
             input_json.data.push(data);
             append_to_veh_list(data);
             bind_edit_del_events();
+            update_veh_total();
         }
+        update_job_total();
         $('#formModal').modal('toggle');
     });
 }
@@ -256,6 +326,9 @@ function parse_csv_data(data) {
         if (row && row.length > 1) {
             var id = veh_no_prefix + row[0];
             var proj = {"id": id, "text": id, "open": true};
+            if (i > 1) {
+                proj.open = false;
+            }
             tasks.data.push(proj);
             for (var j = 1; j < row.length; j++) {
                 var task_name = json.data[0][j];
@@ -355,6 +428,32 @@ function gantt_init() {
 
         return false;
     };
+    gantt.attachEvent("onTemplatesReady", function () {
+        var toggle = document.createElement("i");
+        toggle.className = "fa fa-expand gantt-fullscreen";
+        gantt.toggleIcon = toggle;
+        gantt.$container.appendChild(toggle);
+        toggle.onclick = function () {
+            if (!gantt.getState().fullscreen) {
+                gantt.expand();
+            }
+            else {
+                gantt.collapse();
+            }
+        };
+    });
+    gantt.attachEvent("onExpand", function () {
+        var icon = gantt.toggleIcon;
+        if (icon) {
+            icon.className = icon.className.replace("fa-expand", "fa-compress");
+        }
+    });
+    gantt.attachEvent("onCollapse", function () {
+        var icon = gantt.toggleIcon;
+        if (icon) {
+            icon.className = icon.className.replace("fa-compress", "fa-expand");
+        }
+    });
     gantt.init("gantt");
     gantt_initilaized = true;
 }
